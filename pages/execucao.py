@@ -37,7 +37,6 @@ if st.button("▶️ Iniciar processo") and video_file:
     frame_id = 0
     total_com_epi = 0
     total_sem_epi = 0
-
     progress = st.progress(0)
 
     while cap.isOpened():
@@ -72,8 +71,6 @@ if st.button("▶️ Iniciar processo") and video_file:
 
         out.write(frame)
         frame_id += 1
-
-        # Atualizar barra de progresso
         total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
         progress.progress(min(frame_id / total_frames, 1.0))
 
@@ -131,6 +128,12 @@ if st.button("▶️ Iniciar processo") and video_file:
     fig_bar.update_layout(barmode='group', title="Frames Detectados", title_x=0.5)
     st.plotly_chart(fig_bar, use_container_width=True)
 
-    # Mostrar vídeo anotado
+    # ====== 📥 Botão para download do vídeo ======
     st.success("✅ Processamento concluído!")
-    st.video(output_path)
+    with open(output_path, "rb") as file:
+        st.download_button(
+            label="📥 Baixar vídeo anotado",
+            data=file,
+            file_name="video_anotado.mp4",
+            mime="video/mp4"
+        )
