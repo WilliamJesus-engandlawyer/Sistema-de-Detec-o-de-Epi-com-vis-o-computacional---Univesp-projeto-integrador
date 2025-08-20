@@ -102,7 +102,9 @@ A aplicação foi desenvolvida como parte do tema:
 ## 👨‍💻 Autor
 
 **William Jesus da Silva**
+
 **Izabel Da Silva Freitas Gomes**
+
 **Arthur Mello**
 
 
