@@ -1,6 +1,6 @@
 streamlit
-opencv-python
-ultralytics
-plotly
+opencv-python-headless
+numpy
+pandas
 reportlab
 kaleido
