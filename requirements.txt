@@ -1,8 +1,6 @@
 streamlit
-opencv-python-headless==4.5.5.64
-numpy
-pandas
+opencv-python-headless
+ultralytics
+plotly
 reportlab
 kaleido
-plotly
-ultralytics
