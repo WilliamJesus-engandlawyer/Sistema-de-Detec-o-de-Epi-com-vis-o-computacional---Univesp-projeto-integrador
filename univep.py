@@ -11,6 +11,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from datetime import datetime
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas as pdf_canvas
+from PIL import Image   # <-- FALTAVA ESSE IMPORT
 
 
 # ========================= CONFIGURAÇÃO GLOBAL =========================
@@ -121,12 +122,12 @@ class App(ctk.CTk):
 
 
     def thread_iniciar(self):
-        t = threading.Thread(target=self.iniciar_processamento)
-        t.start()
+        threading.Thread(target=self.iniciar_processamento).start()
 
 
     def iniciar_processamento(self):
 
+        # --- CORRIGIDO: identação quebrada ---
         if not self.modelo_path or not self.video_path:
             self.lbl_status.configure(text="Selecione modelo e vídeo!")
             return
@@ -153,6 +154,10 @@ class App(ctk.CTk):
 
         self.lbl_status.configure(text="Processando vídeo...")
 
+        preview = ctk.CTkLabel(self.tela_execucao, text="")
+        preview.pack(pady=10)
+
+        # ========================= LOOP DO VÍDEO =========================
         while True:
             ret, frame = cap.read()
             if not ret:
@@ -165,21 +170,60 @@ class App(ctk.CTk):
                 cls = int(box.cls[0])
                 label = results.names[cls].lower()
 
-                if any(w in label for w in ["capacete", "helmet", "hardhat"]):
+                if not any(k in label for k in ["person", "pessoa", "helmet", "capacete", "hardhat"]):
+                    continue
+
+                x1, y1, x2, y2 = box.xyxy[0].cpu().numpy().astype(int)
+
+                is_capacete = any(w in label for w in ["capacete", "helmet", "hardhat"])
+
+                if is_capacete:
                     capacete_detectado = True
+                    color = (0, 255, 0)
+                    texto = "COM EPI"
+                else:
+                    color = (0, 0, 255)
+                    texto = "SEM EPI"
+
+                cv2.rectangle(frame, (x1, y1), (x2, y2), color, 2)
+                cv2.putText(frame, texto, (x1, y1 - 10),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2)
 
             if capacete_detectado:
                 com_epi += 1
             else:
                 sem_epi += 1
 
+            cv2.putText(
+                frame,
+                f"Frame {frame_id+1}/{total_frames}",
+                (10, 30),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                1,
+                (255, 255, 255),
+                2
+            )
+
             out.write(frame)
             frame_id += 1
 
             self.progress.set(frame_id / total_frames)
 
+            # --- Mini Preview ---
+            preview_frame = cv2.resize(frame, (400, 220))
+            preview_frame = cv2.cvtColor(preview_frame, cv2.COLOR_BGR2RGB)
+
+            img = ctk.CTkImage(
+                light_image=Image.fromarray(preview_frame),
+                dark_image=Image.fromarray(preview_frame),
+                size=(400, 220)
+            )
+            preview.configure(image=img)
+            preview.image = img
+
         cap.release()
         out.release()
+        preview.destroy()
 
         total = com_epi + sem_epi
         pct_com = com_epi / total * 100 if total else 0
@@ -231,11 +275,9 @@ class App(ctk.CTk):
             return
 
         self.lbl_stats.configure(
-            text=(
-                f"Frames com EPI: {self.resultados['com']}\n"
-                f"Frames sem EPI: {self.resultados['sem']}\n"
-                f"Conformidade: {self.resultados['pct_com']:.2f}%"
-            )
+            text=(f"Frames com EPI: {self.resultados['com']}\n"
+                  f"Frames sem EPI: {self.resultados['sem']}\n"
+                  f"Conformidade: {self.resultados['pct_com']:.2f}%")
         )
 
         fig, ax = plt.subplots(1, 3, figsize=(12, 4))
@@ -258,6 +300,7 @@ class App(ctk.CTk):
         canvas.draw()
         canvas.get_tk_widget().pack()
 
+
     # ========================= PDF =========================
 
     def gerar_pdf(self):
@@ -275,6 +318,7 @@ class App(ctk.CTk):
         c.save()
 
         self.lbl_stats.configure(text="PDF gerado!")
+
 
     # ========================= SALVAR VÍDEO =========================
 
