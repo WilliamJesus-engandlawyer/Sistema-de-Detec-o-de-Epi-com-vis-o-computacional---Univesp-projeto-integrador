@@ -1,115 +1,136 @@
 
+
 ---
 
 # 🦺 Sistema de Detecção de EPI com Visão Computacional
 
-**Projeto Integrador - Univesp**
+### **Projeto Integrador – UNIVESP | Engenharia da Computação**
 
-Este projeto tem como objetivo aplicar **Visão Computacional** e **Aprendizado de Máquina** para a detecção automática do uso de **Equipamentos de Proteção Individual (EPI)**, com foco em **capacetes de segurança**.
-
-A aplicação foi desenvolvida como parte do tema:
-
-> *"Desenvolver análise de dados em escala utilizando algum conjunto de dados existentes e aprendizagem de máquina. Preparar uma interface para visualização dos resultados."*
+Este projeto utiliza **Visão Computacional** e **Machine Learning** para detectar automaticamente o uso de **Equipamentos de Proteção Individual (EPI)** — com foco em **capacetes de segurança** — em vídeos.
+A aplicação teve sua primeira versão de teste no streamlit, um frame work simples que nos ofereceu um suporte bacana para tester a ideia, depois...
+A aplicação foi reconstruída em **Python + CustomTkinter**, oferecendo uma interface desktop completa, processamento local com **YOLO**, geração de gráficos e criação automática de relatório **PDF**.
 
 ---
 
 ## 📌 Funcionalidades
 
-* ✅ Detecção de uso de **capacetes de segurança (EPI)** em vídeos
-* ✅ Processamento automatizado utilizando **YOLO (You Only Look Once)**
-* ✅ Geração de vídeo anotado com as detecções
-* ✅ Dashboard interativo com:
+✔️ Detecção automática de **capacete de segurança (EPI)** em vídeos
+✔️ Processamento usando **YOLO (Ultralytics)**
+✔️ Geração de **vídeo anotado** com caixas e classificações
+✔️ Dashboard integrado com:
 
-  * Gráfico de **pizza (distribuição de EPI)**
-  * Gráfico **gauge (nível de conformidade)**
-  * Gráfico de **barras comparativas**
-* ✅ Download direto do vídeo processado
+* Gráfico **pizza** (com/sem EPI)
+* Gráfico de **barras comparativas**
+* Gráfico de **conformidade (%)**
+
+✔️ **Geração de relatório PDF**
+✔️ **Salvar vídeo anotado** no final
+✔️ Barra de progresso + preview em tempo real
+✔️ Interface moderna construída com **CustomTkinter**
 
 ---
 
 ## 🚀 Tecnologias Utilizadas
 
-* [Python](https://www.python.org/)
-* [Streamlit](https://streamlit.io/) (interface web)
-* [OpenCV](https://opencv.org/) (processamento de vídeo)
-* [Ultralytics YOLO](https://github.com/ultralytics/ultralytics) (modelo de detecção)
-* [Plotly](https://plotly.com/python/) (dashboards interativos)
+* **Python**
+* **CustomTkinter** (Interface gráfica)
+* **OpenCV** (processamento de vídeo)
+* **Ultralytics YOLO**
+* **Matplotlib** (gráficos)
+* **ReportLab** (geração de PDF)
 
 ---
 
 ## 🖥️ Como Executar o Projeto
 
-1. Clone este repositório:
+1. **Clone o repositório:**
 
-   ```bash
-   git clone https://github.com/SeuUsuario/Sistema-de-Detec-o-de-Epi-com-vis-o-computacional---Univesp-projeto-integrador
-   cd Sistema-de-Detec-o-de-Epi-com-vis-o-computacional---Univesp-projeto-integrador
-   ```
+```bash
+git clone https://github.com/SeuUsuario/Sistema-de-Deteccao-EPI-Visao-Computacional
+cd Sistema-de-Deteccao-EPI-Visao-Computacional
+```
 
-2. Crie e ative um ambiente virtual (opcional, mas recomendado):
+2. **Crie e ative o ambiente virtual (opcional, recomendado):**
 
-   ```bash
-   python -m venv venv
-   source venv/bin/activate   # Linux/Mac
-   venv\Scripts\activate      # Windows
-   ```
+```bash
+python -m venv venv
+source venv/bin/activate   # Linux/Mac
+venv\Scripts\activate      # Windows
+```
 
-3. Instale as dependências:
+3. **Instale as dependências:**
 
-   ```bash
-   pip install -r requirements.txt
-   ```
+```bash
+pip install -r requirements.txt
+```
 
-4. Inicie a aplicação:
+4. **Execute a aplicação:**
 
-   ```bash
-   streamlit run main.py
-   ```
+```bash
+python app.py
+```
 
 ---
 
 ## 📂 Estrutura do Projeto
 
 ```
-├── main.py               # Página inicial (apresentação do projeto)
-├── execucao.py           # Lógica de execução, detecção e dashboards
-├── models/
-│   └── modelodedetecçãodecapacete.pt  # Modelo YOLO treinado
-├── requirements.txt      # Dependências do projeto
-└── README.md             # Documentação
+├── app.py                         # Interface completa com CustomTkinter
+├── README.md                      # Documentação
+├── requirements.txt               # Dependências
+└── models/
+    └── modelo_yolo.pt             # Modelo YOLO treinado (adicione aqui)
 ```
 
 ---
 
 ## 🎯 Como Usar
 
-1. Na página inicial, clique na aba **Execução** no menu lateral.
-2. Faça upload de um **vídeo** (formatos suportados: mp4, avi, mov).
-3. Clique em **Iniciar processo** e aguarde a análise.
-4. Visualize os resultados nos gráficos.
-5. Baixe o vídeo anotado diretamente pela interface.
+1. Abra o programa (`python app.py`)
+2. Vá até a aba **Execução**
+3. Selecione:
+
+   * um **modelo YOLO (.pt)**
+   * um **vídeo** para análise
+4. Clique em **Iniciar Detecção**
+5. Aguarde o processamento:
+
+   * Preview ao vivo
+   * Barra de progresso
+6. Veja os resultados na aba **Resultados**
+7. Gere um **PDF** do relatório
+8. Salve o **vídeo anotado**
 
 ---
 
-## 📊 Exemplo de Dashboard
+## 📊 Gráficos Gerados
 
-* **Pizza:** proporção de frames com/sem capacete
-* **Gauge:** nível de conformidade em %
-* **Barras:** comparação de frames detectados
+* **Pizza:** distribuição entre frames com EPI e sem EPI
+* **Barras:** comparação total de detecções
+* **Conformidade (%):** indica aderência ao uso de capacete
 
 ---
 
-## 👨‍💻 Autor
+## 📝 Relatório PDF
+
+O PDF inclui:
+
+* Total de frames com EPI
+* Total de frames sem EPI
+* Conformidade percentual
+* Data e identificação do processamento
+
+---
+
+## 👨‍💻 Autores
 
 **William Jesus da Silva**
-
-**Izabel Da Silva Freitas Gomes**
-
+**Izabel da Silva Freitas Gomes**
 **Arthur Mello**
 
-
-* Projeto Integrador - Univesp
-* Engenharia da Computação
+Projeto Integrador — UNIVESP
+Engenharia da Computação
 
 ---
+
 
